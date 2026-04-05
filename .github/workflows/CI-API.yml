@@ -33,6 +33,9 @@ jobs:
       - name: Install Dependencies
         # Omdat de 'defaults' aan staat, runt hij deze netjes in ./week1
         run: npm install
+         # Controleer de linter!
+      - name: Run ESLint
+        run: npm run lint
       - name: Run Tests & Code Coverage
         # 4. ArtiomTr actie die automatische PR-comments met test dekking en code coverage plaatst!
         uses: ArtiomTr/jest-coverage-report-action@v2
