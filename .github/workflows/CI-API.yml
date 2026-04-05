@@ -3,14 +3,14 @@ name: CI API
 on:
   push:
     paths:
-      - 'api/**'
+      - 'week1/**'
   pull_request:
     branches:
       - main
 # 2. De global defaults, die de working-directory alleen voor 'run' statements instelt.
 defaults:
   run:
-    working-directory: ./api
+    working-directory: ./week1
 # 3. Eén job die gescheiden is
 jobs:
   test-and-coverage:
@@ -32,7 +32,7 @@ jobs:
         uses: ArtiomTr/jest-coverage-report-action@v2
         with:
           # We moeten met de with-statement nógmaals de directory forceren, dit is een eis omdat pre-built actions de 'defaults' negeren.
-          working-directory: ./api
+          working-directory: ./week1
           
           # Om een mooie code coverage te forceren (deze faalt als coverage te laag is).
           coverage-threshold: 80
