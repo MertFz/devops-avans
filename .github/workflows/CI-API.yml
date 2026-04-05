@@ -32,9 +32,9 @@ jobs:
           node-version: '20'
       - name: Install Dependencies
           run: npm install
-        - name: 🔒 Fix Windows Permissions
+        - name: Fix Windows Permissions
           run: chmod +x ./node_modules/.bin/eslint
-        - name: 🔍 Run ESLint
+        - name: Run ESLint
           run: npm run lint
         - name: Run Tests & Code Coverage
         # 4. ArtiomTr actie die automatische PR-comments met test dekking en code coverage plaatst!
