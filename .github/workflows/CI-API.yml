@@ -1,0 +1,38 @@
+name: CI API
+# 1. Runnen bij push voor 'api/**', en pull_requests naar de 'main' branch
+on:
+  push:
+    paths:
+      - 'api/**'
+  pull_request:
+    branches:
+      - main
+# 2. De global defaults, die de working-directory alleen voor 'run' statements instelt.
+defaults:
+  run:
+    working-directory: ./api
+# 3. Eén job die gescheiden is
+jobs:
+  test-and-coverage:
+    name: API Tests and Coverage
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Dependencies
+        # Omdat de 'defaults' aan staat, runt hij deze netjes in ./api (of ./week1)
+        run: npm install
+      - name: Run Tests & Code Coverage
+        # 4. ArtiomTr actie die automatische PR-comments met test dekking en code coverage plaatst!
+        uses: ArtiomTr/jest-coverage-report-action@v2
+        with:
+          # We moeten met de with-statement nógmaals de directory forceren, dit is een eis omdat pre-built actions de 'defaults' negeren.
+          working-directory: ./api
+          
+          # Om een mooie code coverage te forceren (deze faalt als coverage te laag is).
+          coverage-threshold: 80
