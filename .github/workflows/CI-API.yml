@@ -1,5 +1,5 @@
 name: CI API
-# 1. Runnen bij push voor 'api/**', en pull_requests naar de 'main' branch
+# 1. Runnen bij push voor 'week1/**', en pull_requests naar de 'main' branch
 on:
   push:
     paths:
@@ -7,6 +7,12 @@ on:
   pull_request:
     branches:
       - main
+      
+permissions:
+  contents: read
+  pull-requests: write
+  statuses: write
+  checks: write
 # 2. De global defaults, die de working-directory alleen voor 'run' statements instelt.
 defaults:
   run:
@@ -25,7 +31,7 @@ jobs:
         with:
           node-version: '20'
       - name: Install Dependencies
-        # Omdat de 'defaults' aan staat, runt hij deze netjes in ./api (of ./week1)
+        # Omdat de 'defaults' aan staat, runt hij deze netjes in ./week1
         run: npm install
       - name: Run Tests & Code Coverage
         # 4. ArtiomTr actie die automatische PR-comments met test dekking en code coverage plaatst!
@@ -35,4 +41,7 @@ jobs:
           working-directory: ./week1
           
           # Om een mooie code coverage te forceren (deze faalt als coverage te laag is).
-          coverage-threshold: 80
+          threshold: 80  
+          
+          #Geef bovengenoemde permissies expliciet door:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
