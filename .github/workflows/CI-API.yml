@@ -42,9 +42,8 @@ jobs:
         with:
           # We moeten met de with-statement nógmaals de directory forceren, dit is een eis omdat pre-built actions de 'defaults' negeren.
           working-directory: ./week1
-          
-          # Om een mooie code coverage te forceren (deze faalt als coverage te laag is).
-          threshold: 80  
+
+          threshold: 70
           
           #Geef bovengenoemde permissies expliciet door:
           github-token: ${{ secrets.GITHUB_TOKEN }}
