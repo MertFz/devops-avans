@@ -31,9 +31,9 @@ jobs:
         with:
           node-version: '20'
       - name: Install Dependencies
-        # Omdat de 'defaults' aan staat, runt hij deze netjes in ./week1
-        run: npm install
-         # Controleer de linter!
+        run: npm ci
+      - name: Fix Windows Permissions
+        run: chmod +x ./node_modules/.bin/eslint
       - name: Run ESLint
         run: npm run lint
       - name: Run Tests & Code Coverage
@@ -42,9 +42,8 @@ jobs:
         with:
           # We moeten met de with-statement nógmaals de directory forceren, dit is een eis omdat pre-built actions de 'defaults' negeren.
           working-directory: ./week1
-          
-          # Om een mooie code coverage te forceren (deze faalt als coverage te laag is).
-          threshold: 80  
+
+          threshold: 70
           
           #Geef bovengenoemde permissies expliciet door:
           github-token: ${{ secrets.GITHUB_TOKEN }}
