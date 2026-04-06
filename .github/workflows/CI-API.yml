@@ -35,14 +35,15 @@ jobs:
           node-version: '20'
       - name: Install Dependencies
         run: npm ci
-      - name: Fix Windows Permissions
-        run: chmod +x ./node_modules/.bin/eslint || true
+      - name: Fix Permissions
+        run: chmod +x ./node_modules/.bin/eslint ./node_modules/.bin/jest || true
       - name: Run ESLint
         run: npm run lint
       - name: Run Tests & Code Coverage
         uses: ArtiomTr/jest-coverage-report-action@v2
         with:
           working-directory: ./week1
+          test-script: npm test
           threshold: 70
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -61,5 +62,7 @@ jobs:
           node-version: '20'
       - name: Install Dependencies
         run: npm install
+      - name: Fix Permissions
+        run: chmod +x ./node_modules/.bin/jest || true
       - name: Run Unit Tests
         run: npm test
