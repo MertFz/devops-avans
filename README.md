@@ -2,15 +2,15 @@
 
 Full-stack application with microservices architecture, message queuing, and robust monitoring.
 
-## 📊 Service Status
+## Service Status
 
 | Service | Status | Description |
 | :--- | :--- | :--- |
 | **Avans API** | ![CI Status](https://github.com/MertFz/devops-avans/actions/workflows/CI-API.yml/badge.svg) | Main entry point (Express) |
 | **Background Worker** | ![CI Status](https://github.com/MertFz/devops-avans/actions/workflows/CI-API.yml/badge.svg) | Processes orders via RabbitMQ |
-| **Monitoring** | ✅ Online | Prometheus & Grafana |
+| **Monitoring** | Online | Prometheus & Grafana |
 
-## 🏗 Architecture
+## Architecture
 
 - **`avans-api`**: Handles GET / health and POST /order. Publishes orders to `rabbitmq`.
 - **`worker-service`**: Consumes `orders` from RabbitMQ and stores them in its own database.
@@ -18,7 +18,7 @@ Full-stack application with microservices architecture, message queuing, and rob
 - **`prometheus`**: Scrapes metrics from services (API/Worker runtime and DB).
 - **`grafana`**: Visualizes metrics with custom dashboards.
 
-## 🚀 Getting Started
+## Getting Started
 
 1.  **Clone the repository.**
 2.  **Run with Docker Compose:**
@@ -31,7 +31,7 @@ Full-stack application with microservices architecture, message queuing, and rob
     - Prometheus: `http://localhost:9090`
     - RabbitMQ Management: `http://localhost:15672` (guest/guest)
 
-## 🧪 Testing
+## Testing
 
 Run tests locally:
 ```bash

@@ -44,7 +44,9 @@ async function connectRabbit() {
     setTimeout(connectRabbit, 5000);
   }
 }
-connectRabbit();
+if (process.env.NODE_ENV !== 'test') {
+  connectRabbit();
+}
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

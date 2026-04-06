@@ -16,6 +16,9 @@ permissions:
   statuses: write
   checks: write
 
+env:
+  NODE_ENV: test
+
 jobs:
   api-test-and-coverage:
     name: API Tests and Coverage
