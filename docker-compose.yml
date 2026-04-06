@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   database:
     image: mongo:latest
@@ -51,6 +49,45 @@ services:
       - devops-avans-network
     depends_on:
       - api
+
+  db-exporter:
+    image: bitnami/mongodb-exporter:latest
+    container_name: db-exporter
+    command:
+      - --collect-all
+      - --mongodb.uri=mongodb://db_admin:secure_password@database:27017/admin
+    environment:
+      - MONGODB_URI=mongodb://db_admin:secure_password@database:27017/admin
+    networks:
+      - devops-avans-network
+    depends_on:
+      - database
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus:/etc/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - devops-avans-network
+    depends_on:
+      - api
+      - db-exporter
+
+  grafana:
+    build:
+      context: ./grafana
+      dockerfile: Dockerfile
+    container_name: grafana
+    restart: always
+    ports:
+      - "4000:3000"
+    networks:
+      - devops-avans-network
+    depends_on:
+      - prometheus
 
 networks:
   devops-avans-network:
