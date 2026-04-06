@@ -75,6 +75,19 @@ services:
     depends_on:
       - api
       - db-exporter
+      - alertmanager
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: alertmanager
+    volumes:
+      - ./alertmanager:/etc/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+    ports:
+      - "9093:9093"
+    networks:
+      - devops-avans-network
 
   grafana:
     build:
