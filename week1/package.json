@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@shelf/jest-mongodb": "^6.0.2",
+    "@shelf/jest-mongodb": "^5.1.4",
     "@swc/core": "^1.15.24",
     "@swc/jest": "^0.2.39",
     "dotenv": "^17.4.0",
