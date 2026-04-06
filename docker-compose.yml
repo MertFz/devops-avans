@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  database:
+    image: mongo:latest
+    container_name: avans-mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: db_admin
+      MONGO_INITDB_ROOT_PASSWORD: secure_password
+      MONGO_INITDB_DATABASE: avans_db
+    volumes:
+      - ./mongodb-data:/data/db
+      - ./mongo-init:/docker-entrypoint-initdb.d
+    networks:
+      - devops-avans-network
+
+  api:
+    build:
+      context: ./week1
+      dockerfile: Dockerfile
+    container_name: avans-api
+    restart: always
+    environment:
+      - PORT=12345
+      - MONGO_URL=mongodb://db_admin:secure_password@database:27017/avans_db?authSource=admin
+    ports:
+      - "3000:12345"
+    volumes:
+      - ./week1:/app
+      - /app/node_modules
+    networks:
+      - devops-avans-network
+    depends_on:
+      - database
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: avans-frontend
+    restart: always
+    ports:
+      - "5173:5173"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - devops-avans-network
+    depends_on:
+      - api
+
+networks:
+  devops-avans-network:
+    driver: bridge
+
+volumes:
+  mongodb-data:
