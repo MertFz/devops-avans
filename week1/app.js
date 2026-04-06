@@ -28,8 +28,46 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// RabbitMQ Setup
+const amqp = require('amqplib');
+const rabbitUrl = process.env.RABBITMQ_URL || 'amqp://localhost';
+let channel;
+
+async function connectRabbit() {
+  try {
+    const connection = await amqp.connect(rabbitUrl);
+    channel = await connection.createChannel();
+    await channel.assertQueue('orders', { durable: true });
+    console.log('API connected to RabbitMQ (queue: orders)');
+  } catch (err) {
+    console.error('API failed to connect to RabbitMQ:', err);
+    setTimeout(connectRabbit, 5000);
+  }
+}
+connectRabbit();
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
+// New Order POST route
+app.post('/order', async (req, res) => {
+  const order = req.body;
+  if (!order.product || !order.amount) {
+    return res.status(400).json({ error: 'Product and amount are required' });
+  }
+
+  if (channel) {
+    channel.sendToQueue('orders', Buffer.from(JSON.stringify(order)), { persistent: true });
+    res.status(202).json({ message: 'Order sent for processing', order });
+  } else {
+    res.status(503).json({ error: 'Messaging service unavailable' });
+  }
+});
+
+// Simple GET route for functionality check
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK', service: 'avans-api' });
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

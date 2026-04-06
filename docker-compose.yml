@@ -22,6 +22,7 @@ services:
     environment:
       - PORT=12345
       - MONGO_URL=mongodb://db_admin:secure_password@database:27017/avans_db?authSource=admin
+      - RABBITMQ_URL=amqp://rabbitmq
     ports:
       - "3000:12345"
     volumes:
@@ -31,6 +32,7 @@ services:
       - devops-avans-network
     depends_on:
       - database
+      - rabbitmq
 
   frontend:
     build:
@@ -102,9 +104,47 @@ services:
     depends_on:
       - prometheus
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - devops-avans-network
+
+  worker-database:
+    image: mongo:latest
+    container_name: worker-mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: worker_admin
+      MONGO_INITDB_ROOT_PASSWORD: secure_password
+      MONGO_INITDB_DATABASE: worker_db
+    volumes:
+      - worker-mongo-data:/data/db
+    networks:
+      - devops-avans-network
+
+  worker:
+    build:
+      context: ./worker-service
+      dockerfile: Dockerfile
+    container_name: worker-service
+    restart: always
+    environment:
+      - MONGO_URL=mongodb://worker_admin:secure_password@worker-database:27017/worker_db?authSource=admin
+      - RABBITMQ_URL=amqp://rabbitmq
+    networks:
+      - devops-avans-network
+    depends_on:
+      - rabbitmq
+      - worker-database
+
 networks:
   devops-avans-network:
     driver: bridge
 
 volumes:
   mongodb-data:
+  worker-mongo-data:

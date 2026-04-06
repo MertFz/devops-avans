@@ -1,28 +1,28 @@
-name: CI API
-# 1. Runnen bij push voor 'week1/**', en pull_requests naar de 'main' branch
+name: CI Full Stack
+
 on:
   push:
     paths:
       - 'week1/**'
+      - 'worker-service/**'
+      - '.github/workflows/**'
   pull_request:
     branches:
       - main
-      
+
 permissions:
   contents: read
   pull-requests: write
   statuses: write
   checks: write
-# 2. De global defaults, die de working-directory alleen voor 'run' statements instelt.
-defaults:
-  run:
-    working-directory: ./week1
-# 3. Eén job die gescheiden is
+
 jobs:
-  test-and-coverage:
+  api-test-and-coverage:
     name: API Tests and Coverage
     runs-on: ubuntu-latest
-    
+    defaults:
+      run:
+        working-directory: ./week1
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -33,17 +33,30 @@ jobs:
       - name: Install Dependencies
         run: npm ci
       - name: Fix Windows Permissions
-        run: chmod +x ./node_modules/.bin/eslint
+        run: chmod +x ./node_modules/.bin/eslint || true
       - name: Run ESLint
         run: npm run lint
       - name: Run Tests & Code Coverage
-        # 4. ArtiomTr actie die automatische PR-comments met test dekking en code coverage plaatst!
         uses: ArtiomTr/jest-coverage-report-action@v2
         with:
-          # We moeten met de with-statement nógmaals de directory forceren, dit is een eis omdat pre-built actions de 'defaults' negeren.
           working-directory: ./week1
-
           threshold: 70
-          
-          #Geef bovengenoemde permissies expliciet door:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  worker-tests:
+    name: Worker Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./worker-service
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Dependencies
+        run: npm install
+      - name: Run Unit Tests
+        run: npm test
