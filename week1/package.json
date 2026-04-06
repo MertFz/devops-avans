@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon -r dotenv/config ./bin/www",
+    "dev": "nodemon --legacy-watch -r dotenv/config ./bin/www",
     "start": "node ./bin/www",
     "test": "jest",
     "lint": "eslint ."
@@ -24,6 +24,7 @@
     "globals": "^17.4.0",
     "jest": "^30.3.0",
     "mongodb": "^7.1.1",
+    "nodemon": "^3.1.14",
     "supertest": "^7.2.2"
   },
   "jest": {
